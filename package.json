@@ -1,0 +1,34 @@
+{
+  "name": "link-preview-card",
+  "version": "1.0.0",
+  "description": "React RSC-ready component to render OG/Twitter preview cards",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format esm,cjs --clean",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ldlfylt-LDDL/link-preview-card.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ldlfylt-LDDL/link-preview-card/issues"
+  },
+  "homepage": "https://github.com/Ldlfylt-LDDL/link-preview-card#readme",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}

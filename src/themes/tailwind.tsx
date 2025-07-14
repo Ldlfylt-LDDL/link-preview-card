@@ -31,7 +31,7 @@ export function InlinePreview(meta: MetaData, className = "") {
             className={`inline-flex items-center gap-2 text-sm text-blue-600 hover:underline ${className}`}
         >
             {meta.icon && (
-                <img src={meta.icon} className="w-4 h-4 rounded-sm" alt="favicon" />
+                <img src={meta.image} className="w-4 h-4 rounded-sm" alt="favicon" />
             )}
             <span>{meta.title}</span>
             {meta.description && <span className="text-gray-500">— {meta.description}</span>}

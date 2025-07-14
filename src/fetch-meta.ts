@@ -6,26 +6,46 @@ export interface MetaData {
     url?: string;
     icon?: string;
 }
+import { parse } from 'node-html-parser';
+
+const isChallenge = (html: string) =>
+    /<title>\s*Just a moment/i.test(html) ||
+    (html.includes('cf_chl_opt') && html.includes('/challenge-platform/'));
+
 
 export async function fetchMeta(url: string): Promise<MetaData> {
-    const res = await fetch(url, {
-        headers: {
-            "User-Agent": "Mozilla/5.0 (compatible; link-preview-card)",
-        },
-    });
+    const html = await (await fetch(url)).text();
+    console.log(html);
+    if (isChallenge(html)) {
+        throw new Error('Cloudflare challenge detected. ' + url + ' is blocked by Cloudflare Challenge. Only rendering basic url.');
+    }
 
-    const html = await res.text();
-
-    const extract = (regex: RegExp) =>
-        html.match(regex)?.[1]?.trim() || undefined;
+    const root = parse(html);
+    const pick = (sel: string) => {
+        const el = root.querySelector(sel);
+        return el?.getAttribute("content")?.trim() ?? el?.getAttribute("href")?.trim();
+    };
 
     return {
-        title: extract(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"]+)["']/i) ||
-            extract(/<title>([^<]+)<\/title>/i),
-        description: extract(/<meta[^>]*name=["']description["'][^>]*content=["']([^"]+)["']/i),
-        image: extract(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"]+)["']/i),
-        siteName: extract(/<meta[^>]*property=["']og:site_name["'][^>]*content=["']([^"]+)["']/i),
-        url: extract(/<meta[^>]*property=["']og:url["'][^>]*content=["']([^"]+)["']/i),
-        icon: extract(/<link[^>]*rel=["']icon["'][^>]*href=["']([^"]+)["']/i),
+        title:
+            pick('meta[property="og:title"]') ??
+            pick('meta[name="twitter:title"]') ??
+            root.querySelector("title")?.text.trim(),
+
+        description:
+            pick('meta[name="description"]') ??
+            pick('meta[name="twitter:description"]'),
+
+        image:
+            pick('meta[property="og:image"]') ??
+            pick('meta[name="twitter:image"]'),
+
+        siteName: pick('meta[property="og:site_name"]'),
+
+        url: pick('meta[property="og:url"]') ?? url,
+
+        icon:
+            pick('link[rel~="icon"]') ??
+            pick('link[rel="apple-touch-icon"]'),
     };
 }

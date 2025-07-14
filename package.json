@@ -1,33 +1,44 @@
 {
   "name": "link-preview-card",
-  "version": "1.0.0",
+  "version": "0.1.0-alpha.0",
   "description": "React RSC-ready component to render OG/Twitter preview cards",
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
-    "test": "vitest"
+    "test": "vitest",
+    "prepare": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Ldlfylt-LDDL/link-preview-card.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Ldlfylt-LDDL/link-preview-card/issues"
-  },
+
+  "repository": { "type": "git", "url": "git+https://github.com/Ldlfylt-LDDL/link-preview-card.git" },
+  "bugs": { "url": "https://github.com/Ldlfylt-LDDL/link-preview-card/issues" },
   "homepage": "https://github.com/Ldlfylt-LDDL/link-preview-card#readme",
+  "keywords": ["react", "link preview", "open graph", "rsc", "tailwind"],
+
+  "license": "MIT",
+
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
+  "dependencies": {
+    "node-html-parser": "^7.0.1"
+  },
   "devDependencies": {
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"

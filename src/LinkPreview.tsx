@@ -17,7 +17,14 @@ export async function LinkPreview(props: LinkPreviewProps) {
         meta = await fetcher(url);
     } catch (err) {
         console.error("[LinkPreview] Fetch failed:", err);
-        return fallback;
+        return fallback ?? (
+            <a href={url}
+               target="_blank"
+               rel="noopener noreferrer"
+               className={`text-blue-600 underline ${className}`}>
+                {url}
+            </a>
+        );
     }
 
     if (!meta?.title || !meta?.url) {

@@ -5,8 +5,6 @@
 A 1-tag React component that renders beautiful link previews from any URL.
 Supports [React Server Components](https://react.dev/reference/react/experimental_taint-server-components), works without any client-side JavaScript, and uses no proxy by default.
 
----
-
 ## ✨ Features
 
 - ✅ RSC + SSR ready – zero JS sent to browser
@@ -16,8 +14,6 @@ Supports [React Server Components](https://react.dev/reference/react/experimenta
 - ✅ Fallback-safe – shows skeleton / link / error when needed
 - ✅ Built-in LRU/TTL cache support (planned)
 - ✅ 100% TypeScript · <5 KB core size
-
----
 
 ## 📦 Installation
 

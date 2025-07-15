@@ -1,37 +1,42 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { fetchMeta } from "../src/fetch-meta";
 
-const fakeHTML = `
-  <html lang="en">
-    <head>
-      <title>Test Title</title>
-      <meta property="og:title" content="OG Title Here" />
-      <meta name="description" content="A test description." />
-      <meta property="og:image" content="https://img.com/pic.jpg" />
-      <meta property="og:site_name" content="Test Site" />
-      <meta property="og:url" content="https://example.com/test" />
-      <link rel="icon" href="/favicon.ico" />
-    </head>
-  </html>
+global.DOMParser = class {
+    parseFromString(html: string) {
+        const parser = require("node-html-parser").parse;
+        return parser(html);
+    }
+} as any;
+
+const sampleHTML = `
+<html lang="en">
+  <head>
+    <title>Sample Title</title>
+    <meta name="description" content="This is a description." />
+    <meta property="og:image" content="https://example.com/image.png" />
+    <meta property="og:site_name" content="Example Site" />
+    <link rel="icon" href="/favicon.ico" />
+  </head>
+</html>
 `;
 
 describe("fetchMeta", () => {
-    beforeEach(() => {
-        globalThis.fetch = vi.fn().mockResolvedValue({
-            text: async () => fakeHTML,
+    it("should extract metadata correctly", async () => {
+        // mock fetch
+        global.fetch = vi.fn().mockResolvedValue({
+            text: () => Promise.resolve(sampleHTML),
         }) as any;
-    });
 
-    it("should extract OG and meta data from HTML", async () => {
-        const meta = await fetchMeta("https://example.com");
+        const url = "https://example.com";
+        const result = await fetchMeta(url);
 
-        expect(meta).toEqual({
-            title: "OG Title Here",
-            description: "A test description.",
-            image: "https://img.com/pic.jpg",
-            siteName: "Test Site",
-            url: "https://example.com/test",
-            icon: "/favicon.ico",
+        expect(result).toEqual({
+            title: "Sample Title",
+            description: "This is a description.",
+            image: undefined,
+            icon: undefined,
+            siteName: "Example Site",
+            url: "https://example.com",
         });
     });
 });

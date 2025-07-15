@@ -1,51 +1,65 @@
-export interface MetaData {
-    title?: string;
-    description?: string;
-    image?: string;
-    siteName?: string;
-    url?: string;
-    icon?: string;
+import type { MetaData } from "./types";
+
+async function urlOk(src?: string): Promise<boolean> {
+    if (!src) return false;
+    try {
+        const res = await fetch(src, { method: "HEAD" });
+        return res.ok && typeof res.headers.get("content-type") === "string" && res.headers.get("content-type")!.startsWith("image/");
+    } catch {
+        return false;
+    }
 }
-import { parse } from 'node-html-parser';
-
-const isChallenge = (html: string) =>
-    /<title>\s*Just a moment/i.test(html) ||
-    (html.includes('cf_chl_opt') && html.includes('/challenge-platform/'));
-
 
 export async function fetchMeta(url: string): Promise<MetaData> {
-    const html = await (await fetch(url)).text();
-    console.log(html);
-    if (isChallenge(html)) {
-        throw new Error('Cloudflare challenge detected. ' + url + ' is blocked by Cloudflare Challenge. Only rendering basic url.');
+    /* ---------- fetch HTML ---------- */
+    const res = await fetch(url, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; link-preview-card)" },
+    });
+    const html = await res.text();
+
+    /* ---------- anti-bot quick exit ---------- */
+    if (html.includes("Just a moment") && html.includes("cf_chl_opt")) {
+        throw new Error("Cloudflare challenge detected");
     }
 
-    const root = parse(html);
-    const pick = (sel: string) => {
-        const el = root.querySelector(sel);
-        return el?.getAttribute("content")?.trim() ?? el?.getAttribute("href")?.trim();
-    };
+    const $ = (re: RegExp) => html.match(re)?.[1]?.trim();
 
-    return {
+    /* ---------- extract candidates ---------- */
+    let img =
+        $(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
+        $(/<link[^>]+rel=["']apple-touch-icon["'][^>]*href=["']([^"']+)["']/i) ||
+        $(/<link[^>]+rel=["']shortcut icon["'][^>]*href=["']([^"']+)["']/i);
+
+    let icon =
+        $(/<link[^>]+rel=["']icon["'][^>]*href=["']([^"']+)["']/i) ||
+        $(/<link[^>]+rel=["']shortcut icon["'][^>]*href=["']([^"']+)["']/i);
+
+    /* ---------- validate URLs ---------- */
+    if (!(await urlOk(img)))  img  = undefined;
+    if (!(await urlOk(icon))) icon = undefined;
+
+    /* ---------- assemble MetaData ---------- */
+    const meta: MetaData = {
         title:
-            pick('meta[property="og:title"]') ??
-            pick('meta[name="twitter:title"]') ??
-            root.querySelector("title")?.text.trim(),
+            $(/<meta[^>]+property=["']og:title["'][^>]*content=["']([^"']+)["']/i) ||
+            $(/<meta[^>]+name=["']title["'][^>]*content=["']([^"']+)["']/i) ||
+            $(/<title>\s*([\s\S]*?)<\/title>/i),
 
         description:
-            pick('meta[name="description"]') ??
-            pick('meta[name="twitter:description"]'),
+            $(/<meta[^>]+property=["']og:description["'][^>]*content=["']([^"']+)["']/i) ||
+            $(/<meta[^>]+name=["']description["'][^>]*content=["']([^"']+)["']/i),
 
-        image:
-            pick('meta[property="og:image"]') ??
-            pick('meta[name="twitter:image"]'),
+        image:    img,
+        icon:     icon,
 
-        siteName: pick('meta[property="og:site_name"]'),
+        siteName:
+            $(/<meta[^>]+property=["']og:site_name["'][^>]*content=["']([^"']+)["']/i),
 
-        url: pick('meta[property="og:url"]') ?? url,
-
-        icon:
-            pick('link[rel~="icon"]') ??
-            pick('link[rel="apple-touch-icon"]'),
+        url:
+            $(/<meta[^>]+property=["']og:url["'][^>]*content=["']([^"']+)["']/i) ||
+            $(/<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/i) ||
+            url
     };
+    console.log(meta)
+    return meta;
 }

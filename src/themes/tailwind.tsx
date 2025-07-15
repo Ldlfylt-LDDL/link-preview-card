@@ -1,5 +1,5 @@
 import React from "react";
-import type { MetaData } from "../fetch-meta";
+import type { MetaData } from "../types.ts";
 
 export function CardPreview(meta: MetaData, className = "") {
     return (
@@ -15,6 +15,7 @@ export function CardPreview(meta: MetaData, className = "") {
                 <img
                     src={meta.image}
                     alt={meta.title}
+                    referrerPolicy="no-referrer"
                     className="w-full h-auto mt-2 rounded"
                 />
             )}
@@ -31,7 +32,12 @@ export function InlinePreview(meta: MetaData, className = "") {
             className={`inline-flex items-center gap-2 text-sm text-blue-600 hover:underline ${className}`}
         >
             {meta.icon && (
-                <img src={meta.image} className="w-4 h-4 rounded-sm" alt="favicon" />
+                <img
+                    src={meta.icon}
+                    referrerPolicy="no-referrer"
+                    className="w-4 h-4 rounded-sm"
+                    alt="favicon"
+                />
             )}
             <span>{meta.title}</span>
             {meta.description && <span className="text-gray-500">— {meta.description}</span>}

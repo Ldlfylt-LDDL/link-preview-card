@@ -3,7 +3,6 @@
   "version": "0.1.0-alpha.0",
   "description": "React RSC-ready component to render OG/Twitter preview cards",
   "type": "module",
-
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -15,32 +14,46 @@
     }
   },
   "sideEffects": false,
-
   "scripts": {
     "build": "tsup src/index.ts --dts --format esm,cjs --clean",
     "test": "vitest",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "size": "size-limit"
   },
-
-  "repository": { "type": "git", "url": "git+https://github.com/Ldlfylt-LDDL/link-preview-card.git" },
-  "bugs": { "url": "https://github.com/Ldlfylt-LDDL/link-preview-card/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ldlfylt-LDDL/link-preview-card.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ldlfylt-LDDL/link-preview-card/issues"
+  },
   "homepage": "https://github.com/Ldlfylt-LDDL/link-preview-card#readme",
-  "keywords": ["react", "link preview", "open graph", "rsc", "tailwind"],
-
+  "keywords": [
+    "react",
+    "link preview",
+    "open graph",
+    "rsc",
+    "tailwind"
+  ],
   "license": "MIT",
-
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
-  "dependencies": {
-    "node-html-parser": "^7.0.1"
-  },
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^11.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "esbuild-visualizer": "^0.7.0",
+    "size-limit": "^11.2.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
-  }
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "5 KB"
+    }
+  ]
 }

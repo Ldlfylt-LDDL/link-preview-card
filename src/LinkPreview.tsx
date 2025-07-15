@@ -27,7 +27,7 @@ export async function LinkPreview(props: LinkPreviewProps) {
         );
     }
 
-    if (!meta?.title || !meta?.url) {
+    if (!meta?.title) {
         return fallback;
     }
 

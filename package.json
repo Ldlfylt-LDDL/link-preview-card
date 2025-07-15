@@ -1,6 +1,6 @@
 {
   "name": "link-preview-card",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0",
   "description": "React RSC-ready component to render OG/Twitter preview cards",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -1,6 +1,6 @@
 # 🔗 Link Preview Card
 
-> RSC-ready · Zero-JS · Tailwind-first · <5 KB gzip
+> RSC-ready · Zero-JS · Tailwind-first · <2 KB gzip
 
 A 1-tag React component that renders beautiful link previews from any URL.
 Supports [React Server Components](https://react.dev/reference/react/experimental_taint-server-components), works without any client-side JavaScript, and uses no proxy by default.
@@ -11,9 +11,7 @@ Supports [React Server Components](https://react.dev/reference/react/experimenta
 - ✅ No CORS proxy – uses a lightweight HTML fetcher by default
 - ✅ Headless & themeable – Tailwind-based card/inline rendering
 - ✅ Optional fetcher – plug in `link-preview-js`, Microlink API, etc.
-- ✅ Fallback-safe – shows skeleton / link / error when needed
-- ✅ Built-in LRU/TTL cache support (planned)
-- ✅ 100% TypeScript · <5 KB core size
+- ✅ 100% TypeScript · <2 KB core size
 
 ## 📦 Installation
 

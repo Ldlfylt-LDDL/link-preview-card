@@ -1,0 +1,29 @@
+{
+  "name": "link-preview-card-next-demo",
+  "version": "1.0.0",
+  "description": "Next.js RSC demo for link-preview-card component",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@ldlfylt/link-preview-card": "file:../..",
+    "@tailwindcss/postcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.13",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^15.0.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.8.3"
+  }
+} 

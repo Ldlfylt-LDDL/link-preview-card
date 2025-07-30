@@ -16,28 +16,41 @@ Supports [React Server Components](https://react.dev/reference/react/experimenta
 ## 📦 Installation
 
 ```bash
-npm install link-preview-card
-# or
-pnpm add link-preview-card
+npm i @ldlfylt/link-preview-card
 ```
 📘 Requires React 19+ & Tailwind CSS v4
 
 ## 🧪 Quick Usage
 ```tsx
-import { LinkPreview } from "link-preview-card";
+import { LinkPreview } from "@ldlfylt/link-preview-card";
 
-export default function Example() {
+export default async function Example() {
     return (
-    <LinkPreview url="https://vercel.com" />
+        <LinkPreview url="https://vercel.com" />
     );
 }
 ```
+
+## 🎮 Live Demo
+
+Check out the [interactive demo](examples/next-demo/) to see the component in action with server-side rendering:
+
+```bash
+cd examples/next-demo
+npm install
+npm run dev
+```
+
+Then open http://localhost:3000 in your browser.
+
+This demo showcases the true RSC experience with server-side fetching and zero client-side JavaScript.
 ## 🎨 Tailwind v4 Setup (IMPORTANT)
 If you're using Tailwind CSS v4, you must tell it to scan this package's output:
 
 ```css
 /* app/globals.css */
-@source "../node_modules/link-preview-card/dist/**/*.{js,cjs,mjs}";
+@import "tailwindcss";
+@source "../../node_modules/@ldlfylt/link-preview-card/dist/**/*.{js,cjs,mjs}";
 ```
 Then restart dev server.
 
@@ -67,9 +80,14 @@ This ensures your project recognizes the Tailwind class names defined inside thi
 ## 🔧 Advanced Usage
 Custom fetcher (with link-preview-js or headless browser)
 ```tsx
+import { LinkPreview } from "@ldlfylt/link-preview-card";
 
-<LinkPreview
-  url="https://leetcode.com"
-  fetcher={myEdgeFetcher}
-/>
+export default async function Example() {
+  return (
+    <LinkPreview
+      url="https://leetcode.com"
+      fetcher={myEdgeFetcher}
+    />
+  );
+}
 ```

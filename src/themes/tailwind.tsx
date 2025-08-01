@@ -1,12 +1,23 @@
 import React from "react";
-import type { MetaData } from "../types.ts";
+import type { MetaData, StyleConfig, InteractionConfig } from "../types.ts";
 
-export function InlinePreview(meta: MetaData, className = "") {
+interface ThemeComponentProps {
+    meta: MetaData;
+    className?: string;
+    styleConfig?: StyleConfig;
+    interactionConfig?: InteractionConfig;
+}
+
+export function InlinePreview({ 
+    meta, 
+    className = "", 
+    interactionConfig = {}
+}: ThemeComponentProps) {
     return (
         <a
             href={meta.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={interactionConfig.openInNewTab ? "_blank" : "_self"}
+            rel={interactionConfig.openInNewTab ? "noopener noreferrer" : ""}
             className={`inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 hover:underline ${className}`}
         >
             {meta.icon && (
@@ -22,18 +33,31 @@ export function InlinePreview(meta: MetaData, className = "") {
     );
 }
 
-export function CardPreview(meta: MetaData, className = "") {
+export function CardPreview({ 
+    meta, 
+    className = "", 
+    styleConfig = {},
+    interactionConfig = {}
+}: ThemeComponentProps) {
+    const cardClasses = [
+        "block bg-white border border-gray-200 transition-shadow",
+        styleConfig.cardWidth || "max-w-3xl",
+        styleConfig.borderRadius || "rounded-lg",
+        styleConfig.shadow || "shadow-sm",
+        styleConfig.hoverEffect ? "hover:shadow-md" : "",
+        className
+    ].filter(Boolean).join(" ");
+
     return (
         <a
             href={meta.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`block max-w-3xl bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow ${className}`}
+            target={interactionConfig.openInNewTab ? "_blank" : "_self"}
+            rel={interactionConfig.openInNewTab ? "noopener noreferrer" : ""}
+            className={cardClasses}
+            style={styleConfig.customStyles}
         >
             <div className="flex">
-                {/* Left side - Text content */}
                 <div className="flex-1 p-4 flex flex-col justify-between">
-                    {/* Top section - Icon and Title */}
                     <div className="flex items-start gap-2 mb-2">
                         <div className="min-w-0 flex-1">
                             <h3 className="text-gray-900 text-sm line-clamp-2 leading-tight">
@@ -42,14 +66,12 @@ export function CardPreview(meta: MetaData, className = "") {
                         </div>
                     </div>
                     
-                    {/* Middle section - Description */}
                     {meta.description && (
                         <div className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">
                             {meta.description}
                         </div>
                     )}
                     
-                    {/* URL + icon */}
                     <div className="flex items-center text-xs text-zinc-500 gap-1 mt-auto">
                         {meta.icon && (
                             <img
@@ -63,7 +85,6 @@ export function CardPreview(meta: MetaData, className = "") {
                     </div>
                 </div>
                 
-                {/* Right side - Image */}
                 {meta.image && (
                     <div className="flex-shrink-0 max-w-48">
                         <img
@@ -71,7 +92,6 @@ export function CardPreview(meta: MetaData, className = "") {
                             alt={meta.title || 'Preview image'}
                             referrerPolicy="no-referrer"
                             className="w-full h-full object-cover rounded-r-lg"
-
                         />
                     </div>
                 )}
@@ -80,59 +100,82 @@ export function CardPreview(meta: MetaData, className = "") {
     );
 }
 
-export function CardPreview2(meta: MetaData, className = "") {
+export function CardPreview2({ 
+    meta, 
+    className = "", 
+    styleConfig = {},
+    interactionConfig = {}
+}: ThemeComponentProps) {
+    const cardClasses = [
+        "max-w-sm border border-gray-200 shadow-sm transition bg-white overflow-hidden",
+        styleConfig.borderRadius || "rounded-xl",
+        styleConfig.shadow || "shadow-sm",
+        styleConfig.hoverEffect ? "hover:shadow-lg" : "",
+        className
+    ].filter(Boolean).join(" ");
+
     return (
-        <a href={meta.url} target="_blank" rel="noopener noreferrer">
-            <div className={`max-w-sm rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition bg-white overflow-hidden ${className}`}>
-                {/* image on top */}
+        <a 
+            href={meta.url} 
+            target={interactionConfig.openInNewTab ? "_blank" : "_self"}
+            rel={interactionConfig.openInNewTab ? "noopener noreferrer" : ""}
+            className={cardClasses}
+            style={styleConfig.customStyles}
+        >
+            <div className={styleConfig.cardWidth || "max-w-sm"}>
                 {meta.image && (
                     <img
-                    src={meta.image}
-                    alt={meta.title || 'preview'}
-                    className="w-full h-40 object-cover"
-                    referrerPolicy="no-referrer"
+                        src={meta.image}
+                        alt={meta.title || 'preview'}
+                        className="w-full h-40 object-cover"
+                        referrerPolicy="no-referrer"
+                        style={{
+                            height: styleConfig.imageHeight || "10rem",
+                            width: styleConfig.imageWidth || "100%"
+                        }}
                     />
                 )}
 
-                {/* content below */}
                 <div className="p-4 flex flex-col gap-2">
-                    {/* title */}
                     <h3 className="text-base font-semibold text-zinc-800 line-clamp-2">
-                    {meta.title || 'No title'}
+                        {meta.title || 'No title'}
                     </h3>
 
-                    {/* description */}
                     {meta.description && (
-                    <p className="text-sm text-zinc-600 leading-relaxed line-clamp-3">
-                        {meta.description}
-                    </p>
+                        <p className="text-sm text-zinc-600 leading-relaxed line-clamp-3">
+                            {meta.description}
+                        </p>
                     )}
 
-                    {/* site url + favicon */}
                     <div className="flex items-center text-xs text-zinc-500 gap-2 mt-2">
-                    {meta.icon && (
-                        <img
-                        src={meta.icon}
-                        className="w-4 h-4"
-                        alt="favicon"
-                        referrerPolicy="no-referrer"
-                        />
-                    )}
-                    <span className="truncate">{new URL(meta.url || '').hostname}</span>
+                        {meta.icon && (
+                            <img
+                                src={meta.icon}
+                                className="w-4 h-4"
+                                alt="favicon"
+                                referrerPolicy="no-referrer"
+                            />
+                        )}
+                        <span className="truncate">{new URL(meta.url || '').hostname}</span>
                     </div>
                 </div>
             </div>
         </a>
-    )
+    );
 }
 
-export function InlinePreviewWithDomain(meta: MetaData, className = "") {
+export function InlinePreviewWithDomain({ 
+    meta, 
+    className = "", 
+    interactionConfig = {}
+}: ThemeComponentProps) {
     const hostname = new URL(meta.url || '').hostname;
+
     return (
         <a
             href={meta.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={interactionConfig.openInNewTab ? "_blank" : "_self"}
+            rel={interactionConfig.openInNewTab ? "noopener noreferrer" : ""}
             className={`inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 hover:underline ${className}`}
         >
             {meta.icon && (
@@ -149,13 +192,17 @@ export function InlinePreviewWithDomain(meta: MetaData, className = "") {
     );
 }
 
-export function InlinePreviewWithTooltip(meta: MetaData, className = "") {
+export function InlinePreviewWithTooltip({ 
+    meta, 
+    className = "", 
+    interactionConfig = {}
+}: ThemeComponentProps) {
     return (
         <span className="group relative inline-block">
             <a
                 href={meta.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={interactionConfig.openInNewTab ? "_blank" : "_self"}
+                rel={interactionConfig.openInNewTab ? "noopener noreferrer" : ""}
                 className={`inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 hover:underline ${className}`}
             >
                 {meta.icon && (

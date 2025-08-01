@@ -128,7 +128,7 @@ export default function Home() {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Card Theme 2</h3>
-              <LinkPreview url="https://github.com" theme="card2" />
+              <LinkPreview url="https://github.com" theme="card2"/>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Inline Theme with Domain</h3>

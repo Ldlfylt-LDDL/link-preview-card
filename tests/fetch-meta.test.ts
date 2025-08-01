@@ -34,7 +34,7 @@ describe("fetchMeta", () => {
             title: "Sample Title",
             description: "This is a description.",
             image: undefined,
-            icon: undefined,
+            icon: "https://example.com/favicon.ico",
             siteName: "Example Site",
             url: "https://example.com",
         });

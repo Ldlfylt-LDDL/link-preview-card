@@ -1,10 +1,23 @@
 import type { MetaData } from "./types";
 
+function resolveUrl(baseUrl: string, relativeUrl: string): string {
+    try {
+        return new URL(relativeUrl, baseUrl).href;
+    } catch {
+        return relativeUrl;
+    }
+}
+
 async function urlOk(src?: string): Promise<boolean> {
     if (!src) return false;
     try {
-        const res = await fetch(src, { method: "HEAD" });
-        return res.ok && typeof res.headers.get("content-type") === "string" && res.headers.get("content-type")!.startsWith("image/");
+        const res = await fetch(src, { 
+            method: "HEAD",
+            headers: { 
+                "User-Agent": "Mozilla/5.0 (compatible; link-preview-card)" 
+            }
+        });
+        return res.ok;
     } catch {
         return false;
     }
@@ -27,16 +40,50 @@ export async function fetchMeta(url: string): Promise<MetaData> {
     /* ---------- extract candidates ---------- */
     let img =
         $(/<meta[^>]+property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
-        $(/<link[^>]+rel=["']apple-touch-icon["'][^>]*href=["']([^"']+)["']/i) ||
-        $(/<link[^>]+rel=["']shortcut icon["'][^>]*href=["']([^"']+)["']/i);
+        $(/<meta[^>]+name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i) ||
+        $(/<meta[^>]+property=["']twitter:image["'][^>]*content=["']([^"']+)["']/i);
 
     let icon =
-        $(/<link[^>]+rel=["']icon["'][^>]*href=["']([^"']+)["']/i) ||
-        $(/<link[^>]+rel=["']shortcut icon["'][^>]*href=["']([^"']+)["']/i);
+        $(/<link[^>]*rel=["']icon["'][^>]*href=["']([^"']+)["'][^>]*>/i) ||
+        $(/<link[^>]*rel=["']shortcut icon["'][^>]*href=["']([^"']+)["'][^>]*>/i) ||
+        $(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']icon["'][^>]*>/i) ||
+        $(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']shortcut icon["'][^>]*>/i) ||
+        $(/<link[^>]*rel=["']apple-touch-icon["'][^>]*href=["']([^"']+)["'][^>]*>/i) ||
+        $(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']apple-touch-icon["'][^>]*>/i);
+
+    /* ---------- resolve relative URLs ---------- */
+    if (img && img.trim() && !img.startsWith('http')) {
+        img = resolveUrl(url, img);
+    }
+    if (icon && icon.trim() && !icon.startsWith('http')) {
+        icon = resolveUrl(url, icon);
+    }
 
     /* ---------- validate URLs ---------- */
     if (!(await urlOk(img)))  img  = undefined;
-    if (!(await urlOk(icon))) icon = undefined;
+    if (!(await urlOk(icon))) {
+        // Try common favicon paths as fallback
+        const commonFaviconPaths = [
+            '/favicon.ico',
+            '/favicon.png',
+            '/favicon.jpg',
+            '/favicon.svg',
+            '/icon.png',
+            '/icon.svg'
+        ];
+        
+        for (const path of commonFaviconPaths) {
+            const fallbackIcon = resolveUrl(url, path);
+            if (await urlOk(fallbackIcon)) {
+                icon = fallbackIcon;
+                break;
+            }
+        }
+        
+        if (!icon) {
+            icon = undefined;
+        }
+    }
 
     /* ---------- assemble MetaData ---------- */
     const meta: MetaData = {

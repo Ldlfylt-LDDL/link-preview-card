@@ -102,15 +102,13 @@ export default function Home() {
         {/* Demo URLs */}
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Live RSC Examples</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             {demoUrls.map((demo) => (
               <div key={demo.url} className="bg-white p-6 rounded-lg shadow-sm border">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{demo.name}</h3>
                 <p className="text-gray-600 text-sm mb-4">{demo.description}</p>
                 <div className="text-xs text-gray-500 mb-4 break-all">{demo.url}</div>
-                <div className="max-w-sm">
                   <LinkPreview url={demo.url} theme="card" />
-                </div>
               </div>
             ))}
           </div>

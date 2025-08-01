@@ -9,7 +9,7 @@ export interface MetaData {
 
 export interface LinkPreviewProps {
     url: string;
-    theme?: "card" | "inline" | "none";
+    theme?: "card" | "card2" | "inline" | "inline-domain" | "inline-tooltip" | "none";
     fetcher?: (url: string) => Promise<MetaData>;
     refresh?: number;
     fallback?: React.ReactNode;

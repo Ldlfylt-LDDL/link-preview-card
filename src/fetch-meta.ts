@@ -8,6 +8,49 @@ function resolveUrl(baseUrl: string, relativeUrl: string): string {
     }
 }
 
+// RSC兼容的HTML实体解码函数
+function decodeHtmlEntities(text: string): string {
+    if (!text) return text;
+    
+    return text
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&apos;/g, "'")
+        .replace(/&#x27;/g, "'")
+        .replace(/&#x2F;/g, '/')
+        .replace(/&#x60;/g, '`')
+        .replace(/&#x3D;/g, '=')
+        .replace(/&#x2B;/g, '+')
+        .replace(/&#x23;/g, '#')
+        .replace(/&#x24;/g, '$')
+        .replace(/&#x25;/g, '%')
+        .replace(/&#x26;/g, '&')
+        .replace(/&#x28;/g, '(')
+        .replace(/&#x29;/g, ')')
+        .replace(/&#x2A;/g, '*')
+        .replace(/&#x2C;/g, ',')
+        .replace(/&#x2D;/g, '-')
+        .replace(/&#x2E;/g, '.')
+        .replace(/&#x3A;/g, ':')
+        .replace(/&#x3B;/g, ';')
+        .replace(/&#x3C;/g, '<')
+        .replace(/&#x3E;/g, '>')
+        .replace(/&#x3F;/g, '?')
+        .replace(/&#x40;/g, '@')
+        .replace(/&#x5B;/g, '[')
+        .replace(/&#x5C;/g, '\\')
+        .replace(/&#x5D;/g, ']')
+        .replace(/&#x5E;/g, '^')
+        .replace(/&#x5F;/g, '_')
+        .replace(/&#x7B;/g, '{')
+        .replace(/&#x7C;/g, '|')
+        .replace(/&#x7D;/g, '}')
+        .replace(/&#x7E;/g, '~');
+}
+
 async function urlOk(src?: string): Promise<boolean> {
     if (!src) return false;
     try {
@@ -35,7 +78,10 @@ export async function fetchMeta(url: string): Promise<MetaData> {
         throw new Error("Cloudflare challenge detected");
     }
 
-    const $ = (re: RegExp) => html.match(re)?.[1]?.trim();
+    const $ = (re: RegExp) => {
+        const match = html.match(re)?.[1]?.trim();
+        return match ? decodeHtmlEntities(match) : undefined;
+    };
 
     /* ---------- extract candidates ---------- */
     let img =
@@ -107,6 +153,13 @@ export async function fetchMeta(url: string): Promise<MetaData> {
             $(/<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/i) ||
             url
     };
-    console.log(meta)
+    
+    // Debug logging
+    if (!meta.icon) {
+        console.log(`[fetchMeta] No icon found for ${url}`);
+    } else {
+        console.log(`[fetchMeta] Icon found: ${meta.icon}`);
+    }
+    
     return meta;
 }

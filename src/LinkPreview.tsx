@@ -1,6 +1,6 @@
 import type { LinkPreviewProps, MetaData } from "./types";
 import { fetchMeta } from "./fetch-meta";
-import { CardPreview, InlinePreview } from "./themes/tailwind";
+import { CardPreview, CardPreview2, InlinePreview, InlinePreviewWithDomain, InlinePreviewWithTooltip } from "./themes/tailwind";
 
 export async function LinkPreview(props: LinkPreviewProps) {
     const {
@@ -37,6 +37,18 @@ export async function LinkPreview(props: LinkPreviewProps) {
 
     if (theme === "inline") {
         return InlinePreview(meta, className);
+    }
+
+    if (theme === "inline-domain") {
+        return InlinePreviewWithDomain(meta, className);
+    }
+
+    if (theme === "inline-tooltip") {
+        return InlinePreviewWithTooltip(meta, className);
+    }
+
+    if (theme === "card2") {
+        return CardPreview2(meta, className);
     }
 
     // Default: theme === "card"

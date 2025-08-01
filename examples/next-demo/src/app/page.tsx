@@ -124,9 +124,19 @@ export default function Home() {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Inline Theme</h3>
-              <div className="text-gray-700">
-                Check out this awesome project: <LinkPreview url="https://vercel.com" theme="inline" />
-              </div>
+              <LinkPreview url="https://github.com" theme="inline" />
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Card Theme 2</h3>
+              <LinkPreview url="https://github.com" theme="card2" />
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Inline Theme with Domain</h3>
+              <LinkPreview url="https://github.com" theme="inline-domain" />
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Inline Theme with Tooltip</h3>
+              <LinkPreview url="https://github.com" theme="inline-tooltip" />
             </div>
           </div>
         </section>
